@@ -9,6 +9,8 @@
         MouseWheel="Window_MouseWheel">
     <Window.ContextMenu>
         <ContextMenu>
+            <MenuItem Header="🚀 Update Available (Click to Install)" x:Name="MenuUpdateAvailable" Click="MenuUpdateAvailable_Click" FontWeight="Bold" Foreground="#0284C7" Visibility="Collapsed"/>
+            <Separator x:Name="MenuUpdateSeparator" Visibility="Collapsed"/>
             <MenuItem Header="⚡ Boost Light (120px)" x:Name="MenuBoostToggleItem" Click="MenuToggleBoost_Click" FontWeight="Bold"/>
             <MenuItem Header="↺ Revert to Default Size (40px)" x:Name="MenuRevertItem" Click="MenuRevertDefault_Click" IsEnabled="False"/>
             <MenuItem Header="Light Height Presets" x:Name="MenuHeightPresets">
@@ -29,6 +31,8 @@
             <MenuItem Header="Docked Mode (Pins to bottom)" x:Name="MenuDockedItem" Click="MenuDocked_Click" IsCheckable="True" IsChecked="True"/>
             <MenuItem Header="Floating Mode (Movable)" x:Name="MenuFloatingItem" Click="MenuFloating_Click" IsCheckable="True" IsChecked="False"/>
             <Separator/>
+            <MenuItem Header="Check for Updates..." Click="MenuCheckUpdates_Click"/>
+            <Separator/>
             <MenuItem Header="Exit" Click="MenuExit_Click"/>
         </ContextMenu>
     </Window.ContextMenu>
@@ -38,6 +42,30 @@
                    Foreground="Black" FontSize="10" 
                    HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"
                    IsHitTestVisible="False"/>
+        
+        <!-- Update Notification Pill Button -->
+        <Border x:Name="PillUpdate" 
+                Visibility="Collapsed"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Background="#1E293B" BorderBrush="#38BDF8" BorderThickness="1"
+                CornerRadius="13" Padding="10,3"
+                Cursor="Hand"
+                MouseLeftButtonDown="PillUpdate_MouseLeftButtonDown">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="🚀" FontSize="11" Margin="0,0,5,0"/>
+                <TextBlock Text="Update available: " Foreground="#F1F5F9" FontSize="11" FontWeight="SemiBold"/>
+                <TextBlock x:Name="TxtUpdateVersion" Text="v1.2.0" Foreground="#38BDF8" FontSize="11" FontWeight="Bold"/>
+                <TextBlock x:Name="TxtUpdateAction" Text=" • Click to install" Foreground="#CBD5E1" FontSize="11" Margin="3,0,0,0"/>
+                <ProgressBar x:Name="ProgressUpdate" Width="80" Height="6" Margin="8,0,0,0" Visibility="Collapsed"
+                             Minimum="0" Maximum="100" Value="0"/>
+                <Border x:Name="BtnDismissUpdate" Margin="8,0,0,0" Padding="4,0" Background="Transparent"
+                        ToolTip="Dismiss notification"
+                        MouseLeftButtonDown="BtnDismissUpdate_MouseLeftButtonDown">
+                    <TextBlock Text="✕" Foreground="#94A3B8" FontSize="10" FontWeight="Bold"/>
+                </Border>
+            </StackPanel>
+        </Border>
+
         <TextBlock x:Name="TxtInstructions"
                    Text="Right-click for menu • Scroll or Double-click to resize" 
                    Foreground="Black" FontSize="11" 

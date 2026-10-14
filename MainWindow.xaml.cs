@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -41,6 +42,10 @@ namespace LightBarForKeyboard
         public const double MinAllowedHeight = 40.0;
         public const double MaxAllowedHeight = 400.0;
 
+        public static readonly Version CurrentAppVersion = new Version(1, 1, 0);
+        private UpdateInfo? availableUpdate = null;
+        private bool isDownloadingUpdate = false;
+
         private double currentHeight = DefaultHeight;
         private double lastExpandedHeight = 120.0;
         private long lastToggleTimestamp = 0;
@@ -55,12 +60,13 @@ namespace LightBarForKeyboard
             this.Closed += MainWindow_Closed;
         }
 
-        private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
+        private async void MainWindow_Loaded(object? sender, RoutedEventArgs e)
         {
             SetDockedMode();
             UpdateHeightMenuChecks();
             UpdateModeMenuChecks();
             UpdateColorMenuChecks("White");
+            await CheckForUpdatesInBackgroundAsync();
         }
 
         public void ApplyHeight(double newHeight)
@@ -313,6 +319,143 @@ namespace LightBarForKeyboard
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
             UnregisterAppBar();
+        }
+
+        private async Task CheckForUpdatesInBackgroundAsync()
+        {
+            try
+            {
+                await Task.Delay(2000);
+                UpdateInfo? update = await UpdateService.CheckForUpdatesAsync(CurrentAppVersion);
+                if (update != null)
+                {
+                    availableUpdate = update;
+                    ShowUpdateAvailable(update);
+                }
+            }
+            catch
+            {
+                // Background check should not fail or disrupt the application
+            }
+        }
+
+        private void ShowUpdateAvailable(UpdateInfo update)
+        {
+            TxtUpdateVersion.Text = update.TagName;
+            PillUpdate.Visibility = Visibility.Visible;
+            if (MenuUpdateAvailable != null)
+            {
+                MenuUpdateAvailable.Header = $"🚀 Update Available: {update.TagName} (Click to Install)";
+                MenuUpdateAvailable.Visibility = Visibility.Visible;
+            }
+            if (MenuUpdateSeparator != null)
+            {
+                MenuUpdateSeparator.Visibility = Visibility.Visible;
+            }
+        }
+
+        private async void MenuCheckUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                UpdateInfo? update = await UpdateService.CheckForUpdatesAsync(CurrentAppVersion);
+                if (update != null)
+                {
+                    availableUpdate = update;
+                    ShowUpdateAvailable(update);
+
+                    string releaseNotesSnippet = !string.IsNullOrWhiteSpace(update.ReleaseNotes)
+                        ? $"\n\nRelease Notes:\n{(update.ReleaseNotes.Length > 300 ? update.ReleaseNotes.Substring(0, 300) + "..." : update.ReleaseNotes)}"
+                        : "";
+
+                    MessageBoxResult result = MessageBox.Show(
+                        $"A new version ({update.TagName}) of LightBar For Keyboard is available!{releaseNotesSnippet}\n\nWould you like to download and install it now?",
+                        "Update Available",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Information);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        await StartUpdateProcessAsync();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"You are already using the latest version of LightBar For Keyboard (v{CurrentAppVersion.ToString(3)}).",
+                        "Up to Date",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Unable to check for updates at this time.\n\nError: {ex.Message}",
+                    "Check for Updates",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+        }
+
+        private async void PillUpdate_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            await StartUpdateProcessAsync();
+        }
+
+        private async void MenuUpdateAvailable_Click(object sender, RoutedEventArgs e)
+        {
+            await StartUpdateProcessAsync();
+        }
+
+        private void BtnDismissUpdate_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            PillUpdate.Visibility = Visibility.Collapsed;
+        }
+
+        private async Task StartUpdateProcessAsync()
+        {
+            if (availableUpdate == null || isDownloadingUpdate)
+            {
+                return;
+            }
+
+            isDownloadingUpdate = true;
+            PillUpdate.Visibility = Visibility.Visible;
+            ProgressUpdate.Visibility = Visibility.Visible;
+            ProgressUpdate.Value = 0;
+            TxtUpdateAction.Text = " • Starting download...";
+
+            try
+            {
+                await UpdateService.DownloadAndInstallAsync(availableUpdate, percent =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ProgressUpdate.Value = percent;
+                        TxtUpdateAction.Text = $" • Downloading... ({percent:0}%)";
+                    });
+                });
+            }
+            catch (Exception ex)
+            {
+                isDownloadingUpdate = false;
+                ProgressUpdate.Visibility = Visibility.Collapsed;
+                TxtUpdateAction.Text = " • Download failed (Click to retry)";
+
+                MessageBoxResult result = MessageBox.Show(
+                    $"Failed to download the update automatically: {ex.Message}\n\nWould you like to open the GitHub Releases page to download it manually?",
+                    "Update Error",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Error);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    UpdateService.OpenInBrowser(availableUpdate.ReleaseUrl);
+                }
+            }
         }
     }
 }

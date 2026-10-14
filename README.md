@@ -16,6 +16,7 @@ LightBar For Keyboard is a lightweight, system-integrated Windows application de
   - **Yellow**: Warm, eye-friendly light.
 - **Docked Mode (Default)**: Registers as a native Windows Application Desktop Toolbar (AppBar). It securely locks above the taskbar and pushes maximized windows upward so they never cover your light source. Dynamically resizes the desktop work area when height is increased.
 - **Floating Mode**: Switch to Floating Mode to freely drag the bar anywhere vertically or horizontally.
+- **Auto-Update Notification & 1-Click Install**: Automatically checks GitHub Releases in the background. When a new release is available, a non-intrusive pill button appears on the bar and in the menu. Clicking it downloads the installer in the background and runs the update automatically.
 - **Single Instance Engine**: Automatically prevents multiple overlapping bars from opening accidentally.
 - **High DPI Support**: Fully optimized for Windows 11 display scaling, maintaining crisp rendering on any monitor setup.
 
