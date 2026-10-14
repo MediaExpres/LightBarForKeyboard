@@ -33,14 +33,14 @@ ArchitecturesInstallIn64BitMode=x64compatible
 ; Uncomment the following line to use a 64-bit installer.
 ;SetupArchitecture=x64
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\mihai\Desktop\MEDIA EXPRES WEB SERVICES\LightBarForKeyboard\license.txt
-InfoBeforeFile=C:\Users\mihai\Desktop\MEDIA EXPRES WEB SERVICES\LightBarForKeyboard\before.txt
-InfoAfterFile=C:\Users\mihai\Desktop\MEDIA EXPRES WEB SERVICES\LightBarForKeyboard\after.txt
+LicenseFile=license.txt
+InfoBeforeFile=before.txt
+InfoAfterFile=after.txt
 ; Remove the following line to run in administrative install mode (install for all users).
 PrivilegesRequired=lowest
-OutputDir=C:\Users\mihai\Desktop\MEDIA EXPRES WEB SERVICES\LightBarForKeyboard\bin\Release\net10.0-windows\win-x64\publish
+OutputDir=bin\Release\net10.0-windows\win-x64\publish
 OutputBaseFilename=LightBarForKeyboard_Setup
-SetupIconFile=C:\Users\mihai\Desktop\MEDIA EXPRES WEB SERVICES\LightBarForKeyboard\LBFK.ico
+SetupIconFile=LBFK.ico
 SolidCompression=yes
 WizardStyle=modern dynamic
 
@@ -48,7 +48,7 @@ WizardStyle=modern dynamic
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\mihai\Desktop\MEDIA EXPRES WEB SERVICES\LightBarForKeyboard\bin\Release\net10.0-windows\win-x64\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Release\net10.0-windows\win-x64\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
