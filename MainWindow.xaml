@@ -1,29 +1,47 @@
-﻿<Window x:Class="LightBarForKeyboard.MainWindow"
+<Window x:Class="LightBarForKeyboard.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LightBar For Keyboard" Height="40" Width="1920"
         WindowStyle="None" ResizeMode="NoResize" 
         Background="White" Topmost="True" ShowInTaskbar="False"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        PreviewMouseDoubleClick="Window_PreviewMouseDoubleClick"
+        MouseWheel="Window_MouseWheel">
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Color: White (Standard | LCD: 0 Extra Power | OLED: Baseline Energy)" Click="ColorWhite_Click"/>
-            <MenuItem Header="Color: Pure Green (Max Contrast | LCD: 0 Extra Power | OLED: 75% Energy Savings)" Click="ColorGreen_Click"/>
-            <MenuItem Header="Color: Pure Red (Night Vision | LCD: 0 Extra Power | OLED: 85% Energy Savings)" Click="ColorRed_Click"/>
-            <MenuItem Header="Color: Yellow (Eye-Friendly | LCD: 0 Extra Power | OLED: 60% Energy Savings)" Click="ColorYellow_Click"/>
+            <MenuItem Header="⚡ Boost Light (120px)" x:Name="MenuBoostToggleItem" Click="MenuToggleBoost_Click" FontWeight="Bold"/>
+            <MenuItem Header="↺ Revert to Default Size (40px)" x:Name="MenuRevertItem" Click="MenuRevertDefault_Click" IsEnabled="False"/>
+            <MenuItem Header="Light Height Presets" x:Name="MenuHeightPresets">
+                <MenuItem Header="Standard Light (40px - Default)" Click="Height40_Click" x:Name="MenuItemH40" IsCheckable="True" IsChecked="True"/>
+                <MenuItem Header="Medium Light (80px - 2x)" Click="Height80_Click" x:Name="MenuItemH80" IsCheckable="True"/>
+                <MenuItem Header="High Light (120px - 3x)" Click="Height120_Click" x:Name="MenuItemH120" IsCheckable="True"/>
+                <MenuItem Header="Ultra Light (160px - 4x)" Click="Height160_Click" x:Name="MenuItemH160" IsCheckable="True"/>
+                <MenuItem Header="Max Light (200px - 5x)" Click="Height200_Click" x:Name="MenuItemH200" IsCheckable="True"/>
+                <Separator/>
+                <MenuItem Header="Tip: Scroll Mouse Wheel to adjust height" IsEnabled="False"/>
+            </MenuItem>
             <Separator/>
-            <MenuItem Header="Docked Mode (Pins to bottom)" Click="MenuDocked_Click"/>
-            <MenuItem Header="Floating Mode (Movable)" Click="MenuFloating_Click"/>
+            <MenuItem Header="Color: White (Standard | LCD: 0 Extra Power | OLED: Baseline Energy)" x:Name="MenuColorWhite" Click="ColorWhite_Click" IsCheckable="True" IsChecked="True"/>
+            <MenuItem Header="Color: Pure Green (Max Contrast | LCD: 0 Extra Power | OLED: 75% Energy Savings)" x:Name="MenuColorGreen" Click="ColorGreen_Click" IsCheckable="True"/>
+            <MenuItem Header="Color: Pure Red (Night Vision | LCD: 0 Extra Power | OLED: 85% Energy Savings)" x:Name="MenuColorRed" Click="ColorRed_Click" IsCheckable="True"/>
+            <MenuItem Header="Color: Yellow (Eye-Friendly | LCD: 0 Extra Power | OLED: 60% Energy Savings)" x:Name="MenuColorYellow" Click="ColorYellow_Click" IsCheckable="True"/>
+            <Separator/>
+            <MenuItem Header="Docked Mode (Pins to bottom)" x:Name="MenuDockedItem" Click="MenuDocked_Click" IsCheckable="True" IsChecked="True"/>
+            <MenuItem Header="Floating Mode (Movable)" x:Name="MenuFloatingItem" Click="MenuFloating_Click" IsCheckable="True" IsChecked="False"/>
             <Separator/>
             <MenuItem Header="Exit" Click="MenuExit_Click"/>
         </ContextMenu>
     </Window.ContextMenu>
     <Grid>
-        <TextBlock Text="LightBar For Keyboard | MediaExpres v1.0.2" 
+        <TextBlock x:Name="TxtTitle"
+                   Text="LightBar For Keyboard | MediaExpres v1.1.0" 
                    Foreground="Black" FontSize="10" 
-                   HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
-        <TextBlock Text="Right-click anywhere to toggle menu" 
+                   HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                   IsHitTestVisible="False"/>
+        <TextBlock x:Name="TxtInstructions"
+                   Text="Right-click for menu • Scroll or Double-click to resize" 
                    Foreground="Black" FontSize="11" 
-                   HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0" />
+                   HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0"
+                   IsHitTestVisible="False"/>
     </Grid>
 </Window>

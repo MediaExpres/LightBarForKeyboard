@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -37,6 +37,14 @@ namespace LightBarForKeyboard
         private const int SM_CXSCREEN = 0;
         private const int SM_CYSCREEN = 1;
 
+        public const double DefaultHeight = 40.0;
+        public const double MinAllowedHeight = 40.0;
+        public const double MaxAllowedHeight = 400.0;
+
+        private double currentHeight = DefaultHeight;
+        private double lastExpandedHeight = 120.0;
+        private long lastToggleTimestamp = 0;
+
         private bool isDocked = false;
         private bool isAppBarRegistered = false;
 
@@ -50,14 +58,156 @@ namespace LightBarForKeyboard
         private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
         {
             SetDockedMode();
+            UpdateHeightMenuChecks();
+            UpdateModeMenuChecks();
+            UpdateColorMenuChecks("White");
+        }
+
+        public void ApplyHeight(double newHeight)
+        {
+            newHeight = Math.Clamp(newHeight, MinAllowedHeight, MaxAllowedHeight);
+
+            if (Math.Abs(newHeight - currentHeight) < 0.1 && Math.Abs(this.Height - newHeight) < 0.1)
+            {
+                return;
+            }
+
+            double oldHeight = currentHeight;
+            currentHeight = newHeight;
+
+            if (newHeight > DefaultHeight)
+            {
+                lastExpandedHeight = newHeight;
+            }
+
+            if (isDocked)
+            {
+                SetDockedMode();
+            }
+            else
+            {
+                double delta = newHeight - oldHeight;
+                double targetTop = this.Top - delta;
+                double screenHeight = SystemParameters.PrimaryScreenHeight;
+
+                if (targetTop < 0)
+                {
+                    targetTop = 0;
+                }
+                else if (targetTop + newHeight > screenHeight)
+                {
+                    targetTop = Math.Max(0, screenHeight - newHeight);
+                }
+
+                this.Top = targetTop;
+                this.Height = newHeight;
+            }
+
+            UpdateHeightMenuChecks();
+        }
+
+        public void ToggleHeight()
+        {
+            long now = Environment.TickCount64;
+            if (now - lastToggleTimestamp < 250)
+            {
+                return;
+            }
+            lastToggleTimestamp = now;
+
+            if (Math.Abs(currentHeight - DefaultHeight) < 1.0)
+            {
+                double target = lastExpandedHeight > DefaultHeight ? lastExpandedHeight : 120.0;
+                ApplyHeight(target);
+            }
+            else
+            {
+                ApplyHeight(DefaultHeight);
+            }
+        }
+
+        private void Window_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                ToggleHeight();
+                e.Handled = true;
+            }
+        }
+
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            double step = 20.0;
+            double targetHeight = currentHeight + (e.Delta > 0 ? step : -step);
+            ApplyHeight(targetHeight);
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left)
+            {
+                ToggleHeight();
+                e.Handled = true;
+                return;
+            }
+
             if (!isDocked && e.ChangedButton == MouseButton.Left)
             {
                 this.DragMove();
             }
+        }
+
+        private void MenuToggleBoost_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleHeight();
+        }
+
+        private void MenuRevertDefault_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyHeight(DefaultHeight);
+        }
+
+        private void Height40_Click(object sender, RoutedEventArgs e) => ApplyHeight(40);
+        private void Height80_Click(object sender, RoutedEventArgs e) => ApplyHeight(80);
+        private void Height120_Click(object sender, RoutedEventArgs e) => ApplyHeight(120);
+        private void Height160_Click(object sender, RoutedEventArgs e) => ApplyHeight(160);
+        private void Height200_Click(object sender, RoutedEventArgs e) => ApplyHeight(200);
+
+        private void UpdateHeightMenuChecks()
+        {
+            if (MenuItemH40 != null) MenuItemH40.IsChecked = Math.Abs(currentHeight - 40) < 1.0;
+            if (MenuItemH80 != null) MenuItemH80.IsChecked = Math.Abs(currentHeight - 80) < 1.0;
+            if (MenuItemH120 != null) MenuItemH120.IsChecked = Math.Abs(currentHeight - 120) < 1.0;
+            if (MenuItemH160 != null) MenuItemH160.IsChecked = Math.Abs(currentHeight - 160) < 1.0;
+            if (MenuItemH200 != null) MenuItemH200.IsChecked = Math.Abs(currentHeight - 200) < 1.0;
+
+            bool isExpanded = Math.Abs(currentHeight - DefaultHeight) >= 1.0;
+
+            if (MenuRevertItem != null)
+            {
+                MenuRevertItem.IsEnabled = isExpanded;
+            }
+
+            if (MenuBoostToggleItem != null)
+            {
+                MenuBoostToggleItem.Header = isExpanded
+                    ? "⚡ Revert to Default Size (40px)"
+                    : $"⚡ Boost Light ({lastExpandedHeight:0}px)";
+            }
+        }
+
+        private void UpdateModeMenuChecks()
+        {
+            if (MenuDockedItem != null) MenuDockedItem.IsChecked = isDocked;
+            if (MenuFloatingItem != null) MenuFloatingItem.IsChecked = !isDocked;
+        }
+
+        private void UpdateColorMenuChecks(string selected)
+        {
+            if (MenuColorWhite != null) MenuColorWhite.IsChecked = (selected == "White");
+            if (MenuColorGreen != null) MenuColorGreen.IsChecked = (selected == "Green");
+            if (MenuColorRed != null) MenuColorRed.IsChecked = (selected == "Red");
+            if (MenuColorYellow != null) MenuColorYellow.IsChecked = (selected == "Yellow");
         }
 
         private void MenuDocked_Click(object sender, RoutedEventArgs e)
@@ -65,6 +215,7 @@ namespace LightBarForKeyboard
             if (!isDocked)
             {
                 SetDockedMode();
+                UpdateModeMenuChecks();
             }
         }
 
@@ -74,27 +225,32 @@ namespace LightBarForKeyboard
             {
                 isDocked = false;
                 UnregisterAppBar();
+                UpdateModeMenuChecks();
             }
         }
 
         private void ColorWhite_Click(object sender, RoutedEventArgs e)
         {
             this.Background = new SolidColorBrush(Colors.White);
+            UpdateColorMenuChecks("White");
         }
 
         private void ColorGreen_Click(object sender, RoutedEventArgs e)
         {
             this.Background = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+            UpdateColorMenuChecks("Green");
         }
 
         private void ColorRed_Click(object sender, RoutedEventArgs e)
         {
             this.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            UpdateColorMenuChecks("Red");
         }
 
         private void ColorYellow_Click(object sender, RoutedEventArgs e)
         {
             this.Background = new SolidColorBrush(Color.FromRgb(255, 191, 0));
+            UpdateColorMenuChecks("Yellow");
         }
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
@@ -128,7 +284,7 @@ namespace LightBarForKeyboard
 
             SHAppBarMessage(ABM_QUERYPOS, ref data);
 
-            int physicalHeight = (int)(40 * dpiY);
+            int physicalHeight = (int)(currentHeight * dpiY);
             data.rc.top = data.rc.bottom - physicalHeight;
 
             SHAppBarMessage(ABM_SETPOS, ref data);
@@ -136,7 +292,7 @@ namespace LightBarForKeyboard
             this.Left = data.rc.left / dpiX;
             this.Top = data.rc.top / dpiY;
             this.Width = (data.rc.right - data.rc.left) / dpiX;
-            this.Height = 40;
+            this.Height = currentHeight;
 
             isDocked = true;
         }

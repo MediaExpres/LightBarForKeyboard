@@ -1,26 +1,23 @@
 # LightBar For Keyboard
 
-LightBar For Keyboard is a lightweight, system-integrated Windows application designed to create a bright white bar at the bottom of your screen. It serves as a software-based keyboard light, reflecting light from your monitor down onto your laptop or desktop keyboard in low-light environments.
-
-## Features
-
-- **Docked Mode (Default)**: Registers itself as a native Windows Application Desktop Toolbar (AppBar). It securely locks above the taskbar and pushes maximized windows (like Chrome or VS Code) upward so they never cover your light source.
-- **Floating Mode**: Need to see what's hidden underneath or at the bottom of your screen? Switch to Floating Mode, and you can left-click and drag the bar anywhere vertically or horizontally.
-- **Context Menu**: Right-click anywh# LightBar For Keyboard
-
 LightBar For Keyboard is a lightweight, system-integrated Windows application designed to create a customizable light bar at the bottom of your screen. It serves as a software-based keyboard light, reflecting light from your monitor down onto your laptop or desktop keyboard in low-light environments.
 
 ## Features
 
+- **Adjustable Height & Brightness Boost**:
+  - **Height Presets**: Choose between Standard (40px Default), Medium Light (80px), High Light (120px), Ultra Light (160px), and Max Light (200px) directly from the context menu.
+  - **Double-Click Quick Toggle**: Double-click anywhere on the light bar to instantly toggle between boost height and default size (40px).
+  - **Mouse Wheel Resizing**: Hover over the light bar and scroll your mouse wheel up or down to smoothly and dynamically adjust the height.
+  - **Revert to Default Size**: Instantly snap back to the baseline 40px height with a single click.
 - **Color Profiles & OLED Optimization**: Choose from multiple colors optimized for contrast and energy savings:
   - **White**: Standard brightness.
   - **Pure Green**: Maximum contrast on dark keys.
   - **Pure Red**: Protects night vision and offers the lowest power draw.
   - **Yellow**: Warm, eye-friendly light.
-- **Docked Mode (Default)**: Registers as a native Windows Application Desktop Toolbar (AppBar). It securely locks above the taskbar and pushes maximized windows upward so they never cover your light source.
+- **Docked Mode (Default)**: Registers as a native Windows Application Desktop Toolbar (AppBar). It securely locks above the taskbar and pushes maximized windows upward so they never cover your light source. Dynamically resizes the desktop work area when height is increased.
 - **Floating Mode**: Switch to Floating Mode to freely drag the bar anywhere vertically or horizontally.
 - **Single Instance Engine**: Automatically prevents multiple overlapping bars from opening accidentally.
-- **High DPI Support**: Fully optimized for Windows 11 display scaling, ensuring the bar remains exactly 40 pixels high on any monitor setup.
+- **High DPI Support**: Fully optimized for Windows 11 display scaling, maintaining crisp rendering on any monitor setup.
 
 ## Energy Efficiency vs. Hardware Lighting
 
@@ -46,10 +43,14 @@ Our application leverages the screen you are already using.
 ## How to Use
 
 1. **Launch**: Install the application using the setup file, or double-click the portable `LightBarForKeyboard.exe`.
-2. **Change Color**: Right-click anywhere on the bar and select your preferred color profile.
-3. **Move (Floating Mode)**: Right-click the bar, select **Floating Mode**, then hold down the **left mouse button** to drag it.
-4. **Lock (Docked Mode)**: Right-click the bar and select **Docked Mode** to pin it back to the bottom edge.
-5. **Close**: Right-click and choose **Exit**.
+2. **Adjust Height & Brightness**:
+   - **Double-Click** the bar to toggle between Boost mode and Default size (40px).
+   - **Scroll the Mouse Wheel** over the bar to increase or decrease height.
+   - Right-click and choose **Height Presets** or **Revert to Default Size (40px)**.
+3. **Change Color**: Right-click anywhere on the bar and select your preferred color profile.
+4. **Move (Floating Mode)**: Right-click the bar, select **Floating Mode**, then hold down the **left mouse button** to drag it anywhere.
+5. **Lock (Docked Mode)**: Right-click the bar and select **Docked Mode** to pin it back to the bottom edge.
+6. **Close**: Right-click and choose **Exit**, or press `Alt + F4`.
 
 ## Download
 
@@ -67,8 +68,6 @@ Because this is a new, independent application without a corporate Code Signing 
 
 If you find LightBar For Keyboard useful and it helps you save energy and work better in the dark, consider supporting its development! This software is free, but your support helps keep the lights on (literally and figuratively). 
 
-You can buy me a coffee or sponsor me via PayPal using the links below:
-
 <a href="https://buymeacoffee.com/mihaipavel6">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="150">
 </a>
@@ -78,29 +77,6 @@ You can buy me a coffee or sponsor me via PayPal using the links below:
 ## License & Copyright
 
 © 2026 MediaExpres. All rights reserved.
-
-This software is **Free to use and modify** under the following conditions:
-
-- **Attribution**: You must give appropriate credit to the original source.
-- **Modification**: You are free to modify this code for your own needs.
-- **No Warranty**: This software is provided "as-is", without warranty of any kind.ere on the white bar to seamlessly toggle between modes or exit the application.
-- **High DPI Support**: Fully optimized for Windows 11 display scaling, ensuring the bar remains exactly 40 pixels high on any monitor setup.
-
-## How to Use
-
-1. **Launch**: Double-click `LightBarForKeyboard.exe`.
-2. **Move (Floating Mode)**: Right-click the bar, select **Floating Mode**, then hold down the **left mouse button** to drag it.
-3. **Lock (Docked Mode)**: Right-click the bar and select **Docked Mode** to pin it back to the bottom edge.
-4. **Close**: Right-click and choose **Exit**, or press `Alt + F4` while the bar is active.
-
-## Download
-
-You can download the latest standalone executable from the Releases section:
-👉 **[Download LightBar For Keyboard Latest Release](https://github.com/MediaExpres/LightBarForKeyboard/releases)**
-
-## License & Copyright
-
-© 2026 Media Expres SRL. All rights reserved.
 
 This software is **Free to use and modify** under the following conditions:
 

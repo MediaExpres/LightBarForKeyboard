@@ -2,8 +2,9 @@ Installation Complete! Thank you for installing LightBar For Keyboard.
 
 Quick Tips:
 1. To access settings, just RIGHT-CLICK anywhere on the white light bar.
-2. From the right-click menu, you can easily switch between "Docked" and "Floating" modes, or exit the application completely.
-3. If you chose to create a desktop shortcut, you can start the app from there anytime.
+2. Double-click the light bar to instantly toggle light boost, or scroll your mouse wheel to adjust height dynamically.
+3. From the right-click menu, you can select height presets, revert to default (40px), change colors, or switch between "Docked" and "Floating" modes.
+4. If you chose to create a desktop shortcut, you can start the app from there anytime.
 
 For feedback, bug reports, or to download the source code, please visit our GitHub repository:
 https://github.com/MediaExpres/LightBarUtility
